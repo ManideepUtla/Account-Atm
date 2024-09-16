@@ -13,7 +13,9 @@ public class DBConnection {
                 System.out.println("Getting connection");
 
                 Class.forName("com.mysql.cj.jdbc.Driver");
-                connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/bank", "root", "Manideep2##2");
+                connection = DriverManager.getConnection("jdbc:mysql://@localhost:3306/aadhar",
+                        "root",
+                        "Manideep2##2");
             }else{
                 System.out.println("Returing existing connection");
             }

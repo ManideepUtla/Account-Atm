@@ -4,14 +4,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
-@NoArgsConstructor
+@Builder
 public class Account {
 
-    private String accountNumber;
-    private String name;
-    private String pan;
-    private String mobileNumber;
-    private double balance;
+    public String accountNumber;
+    public String name;
+    public String pan;
+    public String mobileNumber;
+    public double balance;
+    public Address address;
 }

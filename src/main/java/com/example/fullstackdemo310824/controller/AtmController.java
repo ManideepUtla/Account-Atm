@@ -19,8 +19,6 @@ public class AtmController {
         atm.setCardnumber(cardnumber);
         return atm;
     }
-
-
     @PostMapping(value = "/api/validateAtm", consumes = "application/json", produces = "application/json")
     public boolean validateAtm(@RequestBody Atm atm) throws Exception {
         AtmService atmService = new AtmService();
