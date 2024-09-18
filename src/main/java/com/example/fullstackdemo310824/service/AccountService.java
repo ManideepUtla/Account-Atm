@@ -4,6 +4,9 @@ import com.example.fullstackdemo310824.exception.AccountcreationFailedException;
 import com.example.fullstackdemo310824.hibernate.HibernateUtils;
 import com.example.fullstackdemo310824.model.*;
 import com.example.fullstackdemo310824.model.Address;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -13,10 +16,49 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 
 public class AccountService {
+
+    public Account searchAccountByJpa(String accountNumber){
+        EntityManagerFactory emf=Persistence.createEntityManagerFactory("jpaDemo");
+        EntityManager entityManager=emf.createEntityManager();
+        entityManager.getTransaction().begin();
+        jakarta.persistence.Query query= entityManager.createQuery("select a from AccountEntity a where a.accountNumber=:inputAccountNumber ");
+        query.setParameter("inputAccountNumber",accountNumber);
+
+        List<AccountEntity> accountEntities = query.getResultList();
+        AccountEntity accountEntity=accountEntities.get(0);
+        Account account= Account.builder()
+                .accountNumber(accountEntity.getAccountNumber())
+                .mobileNumber(accountEntity.getMobileNumber())
+                .pan(accountEntity.getPan())
+                .balance(accountEntity.getBalance())
+                .name(accountEntity.getName())
+                .build();
+        List<AccountAddressEntity> accountAddressEntityList=
+                accountEntity.getAccountAddressEntityList();
+
+        if (Objects.nonNull(accountAddressEntityList)&& accountAddressEntityList.size()>0){
+
+            AccountAddressEntity accountAddressEntity=accountAddressEntityList.get(0);
+            System.out.println("AccountAddressEntity is Loaded");
+            Address address=new Address();
+            address.setAdd1(accountAddressEntity.getAddress1());
+            address.setAdd2(accountAddressEntity.getAddress2());
+            address.setPincode(accountAddressEntity.getPincode());
+            address.setCity(accountAddressEntity.getCity());
+            address.setState(accountAddressEntity.getState());
+            account.setAddress(address);
+
+
+        }
+        entityManager.getTransaction().commit();
+        return account;
+
+    }
 
     public Account searchAccount(String accountNumber) {
         SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
